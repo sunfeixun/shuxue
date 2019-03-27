@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Access-Control-Allow-Origin" content="*" />
+	<meta charset="UTF-8">
+	<meta charset="utf-8" name="viewport">
+	<!--meta name="viewport" content="width=1280,user-scalable=no" />
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection"-->
+	<title>幼小衔接</title>
+	<style type="text/css">
+	body{margin:0px;overflow: hidden;}
+	/*
+		@font-face{
+			font-family: myfont;
+			src:url('font/simkai.ttf');
+		}*/
+	</style>
+	<script type="text/javascript" src="lib/createjs.min.js"></script>
+	<script type="text/javascript" src="CoursePool/courseGetter.js"></script>
+	<script type="text/javascript" src="js/createStage.js"></script>
+</head>
+<body onload="getCourse()">
+<canvas width="1280" height="720" style="background-color: rgba(235,242,226,1);" id="canvas"></canvas>
+<script type="text/javascript">
+	function getCourse() {
+		let courseClass = 'Shuxue/Yxxj/';
+		let xueqi = sessionStorage.xueqi;
+
+		courseGetter.definePath({
+			courseClass:'Course/' + courseClass,
+			coursePath:'Course/' + courseClass + xueqi + '/',
+			quizPath:'QuizPool/' + courseClass + xueqi + '/',
+			quizClass:'QuizPool/' + courseClass
+		});
+
+		courseGetter.getCourse('Course/' + courseClass + 'courseInterface.js');
+		courseGetter.on('onready',course1.go);
+	}
+</script>
+</body>
+</html>

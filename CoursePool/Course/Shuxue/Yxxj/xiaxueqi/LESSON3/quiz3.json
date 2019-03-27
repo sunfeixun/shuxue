@@ -1,0 +1,27 @@
+{
+
+"images": [
+    "quiz3.png"
+],
+
+"framerate": 0,
+"frames": [
+    [1, 1, 941, 156, 0, 0, 0],
+    [1, 159, 784, 155, 0, 0, 0],
+    [787, 159, 34, 55, 0, 0, 0],
+    [787, 216, 153, 53, 0, 0, 0]
+],
+
+"animations": {
+    "q2": { "frames": [0] },
+    "q1": { "frames": [1] },
+    "two": { "frames": [2] },
+    "brackets": { "frames": [3] }
+},
+
+"texturepacker": [
+        "SmartUpdateHash: $TexturePacker:SmartUpdate:15153a98211672ee8160fb2fc4b1cb5c:6425b669a2ebaf1901106491cf029af0:fb08dcee54f59de1660a5bc9743a1c00$",
+        "Created with TexturePacker (https://www.codeandweb.com/texturepacker) for EaselJS"
+]
+
+}

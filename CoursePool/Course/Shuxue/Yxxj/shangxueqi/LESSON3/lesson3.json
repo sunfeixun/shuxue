@@ -1,0 +1,15 @@
+{
+
+"images": [
+    "lesson3.png"
+],
+
+"frames": [
+    [1, 1, 1100, 436, 0, 0, 0]
+],
+
+"animations": {
+    "animals": { "frames": [0] }
+}
+
+}

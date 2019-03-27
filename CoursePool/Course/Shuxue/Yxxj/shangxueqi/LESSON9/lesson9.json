@@ -1,0 +1,18 @@
+{
+
+"images": [
+    "lesson9.png"
+],
+
+"frames": [
+    [1, 1, 452, 633, 0, 0, 0],
+    [1, 636, 452, 624, 0, 0, 0],
+    [455, 1, 419, 633, 0, 0, 0]
+],
+
+"animations": {
+    "rabbit2": { "frames": [0] },
+    "rabbit3": { "frames": [1] },
+    "rabbit1": { "frames": [2] }
+}
+}

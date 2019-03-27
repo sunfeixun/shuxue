@@ -1,0 +1,15 @@
+{
+
+"images": [
+    "lesson4.png"
+],
+
+"frames": [
+    [1, 1, 1000, 650, 0, 0, 0]
+],
+
+"animations": {
+    "room": { "frames": [0] }
+}
+
+}

@@ -1,0 +1,15 @@
+{
+
+"images": [
+    "QUIZ.png"
+],
+
+"frames": [
+    [1, 1, 543, 600, 0, 0, 0]
+],
+
+"animations": {
+    "kid": { "frames": [0] }
+}
+
+}

@@ -1,0 +1,11 @@
+{
+	"images":["girl.png"],
+	"frames": {"width":185,"height":300,"regX":92.5,"regY":150,"count":35},
+
+	"animations": {
+	    "stand":13,
+	    "paishou": [0,12,"stand",1.6],
+	    "footleft": [13,22,"stand",1.6],
+	    "footright":[23,33,"stand",1.6]
+	}
+}
