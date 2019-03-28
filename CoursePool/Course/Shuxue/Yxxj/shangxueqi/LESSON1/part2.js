@@ -8,8 +8,8 @@
 		let p = new father.part(2,0);
 
 		p.go = function() {
-			new father.title('这幅图画是一所开心的农场，小动物们都开开心心\n地玩耍，小朋友们这幅图里都有什么？',p);
-			getImage('bg',p).set({x:640,y:410,scaleX:0.7,scaleY:0.7});
+			getImage('bg',p).set({scaleX:1.66,scaleY:1.18,regX:0,regY:0});
+			new father.title('这幅图画是一所开心的农场，小动物们都开开心心地玩耍，\n小朋友们这幅图里都有什么？',p).set({scaleX:.7,scaleY:.7,x:260});
 
 			delete p.go;
 		}

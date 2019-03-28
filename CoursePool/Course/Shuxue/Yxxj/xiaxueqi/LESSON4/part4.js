@@ -10,8 +10,7 @@
 
 	p.go = function() {
 		father.read('part4.mp3');
-		// father.loader.playSound('part4.mp3');
-		let texts = ['按颜色排序你学会了吗？','按大小排序你学会了吗？','按形状排序你学会了吗？','今天我们学习了，按颜色排序、按大小排序、\n按形状排序，你学会了吗？'];
+		let texts = ['按颜色排序你学会了吗？\n按大小排序你学会了吗？\n按形状排序你学会了吗？\n今天我们学习了，按颜色排序、按大小排序、\n按形状排序，你学会了吗？'];
 		let textCon = p.addChild(new createjs.Container);
 		let txt;
 

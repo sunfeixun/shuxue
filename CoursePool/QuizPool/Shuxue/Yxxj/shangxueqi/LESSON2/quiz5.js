@@ -4,44 +4,43 @@
 
 	father.loader.add(['QUIZ.json','QUIZ.png'],father.quizPath);
 
-	const treeGroup = new father.group;
-	let correctIcon;
+	const sugarGroup = new father.group, budingGroup = new father.group;
+	const padding = 83, left = 141;
+	const numbers = new father.group;
+	let circle;
 
 	p.go = function(){
-		new father.title('想一想，哪颗大树最高，请在正确的（ ）里面画“√”。',p);
+		new father.title('比一比，两种糖果哪一种多呢？请在正确的（ ）里画“○”。',p);
 		let sprite = father.loader.getSprite('QUIZ',true);
-		let scaley = [0.6,0.8,1];
 		let ansCon = p.addChild(new createjs.Container);
-		let bracket, tree
+		let scale = {scaleX:0.6,scaleY:0.6};
 
-		sprite.tree.regY = sprite.tree.getBounds().height;
-
-		sprite.tree.scaleX = 0.8;
-		sprite.tree.y = 500;
-		sprite.bracket.y = 560;
-		sprite.correctIcon.y = sprite.bracket.y;
-
-		correctIcon = sprite.correctIcon;
-		p.addChild(correctIcon);
-
-		for(let i=0;i<scaley.length;i++){
-			tree = sprite.tree.clone();
-			tree.scaleY = scaley[i];
-
-			bracket = sprite.bracket.clone();
-			tree.bracket = bracket;
-
-			treeGroup.array.push(tree);
-			ansCon.addChild(tree,bracket);
-			if(i===scaley.length-1){
-				tree.correct = bracket.correct = true;
-			}
+		for(let i=0;i<5;i++){
+			sugarGroup.array.push(sprite.sugar.clone().set(scale));
+			budingGroup.array.push(sprite.buding.clone().set(scale));
 		}
 
-		treeGroup.sumAttr('x',309,331).addTo(ansCon);
+		sugarGroup.y = 291;
+		budingGroup.y = 455;
+
+		sugarGroup.set({y:sugarGroup.y}).sumAttr('x',294,119).addTo(ansCon);
+		budingGroup.set({y:budingGroup.y}).sumAttr('x',294,119).addTo(ansCon);
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);
+
+		// 创建括号
+		let bracket;
+
+		sugarGroup.bracket = sprite.bracket.clone().set({x:967,y:sugarGroup.y});
+		budingGroup.bracket = sprite.bracket.clone().set({x:967,y:budingGroup.y});
+
+		ansCon.addChild(sugarGroup.bracket,budingGroup.bracket);
+
+		circle = sprite.circle;
+		circle.x = sugarGroup.bracket.x;
+
+		p.addChild(circle);
 
 		fresh();
 
@@ -49,29 +48,49 @@
 	}
 
 	p.reset = function(){
-		p.mouseEnabled = true;
 		fresh();
+		circle.visible = false;
+		p.mouseEnabled = true;
 	}
 
 	function fresh(){
-		treeGroup.freshAttr('x');
-		for(let i=0;i<treeGroup.array.length;i++){
-			treeGroup.array[i].bracket.x = treeGroup.array[i].x;
+		let n1, n2, i, answer;
+		let attr = {visible:false,correct:false};
+
+		numbers.array = [1,2,3,4,5];
+		n1 = numbers.chooseOne();
+		n2 = numbers.chooseOne();
+
+		sugarGroup.set(attr);
+		budingGroup.set(attr);
+
+		sugarGroup.bracket.correct = false;
+		budingGroup.bracket.correct = false;
+
+		for(i=0;i<n1;i++){
+			sugarGroup.array[i].visible = true;
 		}
-		correctIcon.visible = false;
+
+		for(i=0;i<n2;i++){
+			budingGroup.array[i].visible = true;
+		}
+
+		answer = n1>n2? sugarGroup:budingGroup;
+
+		answer.set({correct:true});
+		answer.bracket.correct =  true;
 	}
 
 	function onclick(e){
 		if(e.target.correct){
 			p.mouseEnabled = false;
-			correctIcon.x = e.target.x;
-			correctIcon.visible = true;
+			circle.visible = true;
+			circle.y = e.target.bracket? e.target.bracket.y:e.target.y;
 
 			p.dispatchEvent(father.ANSWER_CORRECT);
-			p.dispatchEvent(father.ANSWER_FINISH);
+			p.dispatchEvent(father.ANSWER_FINISH);			
 		}else{
 			p.dispatchEvent(father.ANSWER_INCORRECT);
 		}
 	}
-
 })();

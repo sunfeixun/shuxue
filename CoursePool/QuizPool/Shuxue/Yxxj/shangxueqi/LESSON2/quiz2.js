@@ -7,29 +7,29 @@
 	const ansGroup = new father.group;
 
 	p.go = function(){
-		new father.title('想一想，他们谁高呢？',p);
-		let sprite = father.loader.getSprite('QUIZ',true);
+		new father.title('想一想，哪一根最长呢？',p);
+		let sprite = father.loader.getSprite('QUIZ');
 		let ansCon = p.addChild(new createjs.Container);
-		let scale = 0.8
+		let objs = ['rope1','rope2'];
 
-		ansGroup.array.push(sprite.changjl,sprite.horse);
-		ansGroup.addTo(ansCon);
+		for(let i = 0;i<objs.length;i++){
+			ansGroup.array.push(sprite[objs[i]]);
+		}
 
-		sprite.changjl.set({x:398,y:378,scaleX:scale,scaleY:scale});
-		sprite.horse.set({x:843,y:526,scaleX:scale,scaleY:scale});
+		ansGroup.set({x:176}).sumAttr('y',300,200).addTo(ansCon);
 
-		sprite.changjl.correct = true;
+		sprite.rope2.correct = true;
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);
 
-		ansGroup.freshAttr('x');
+		ansGroup.freshAttr('y');
 
 		delete p.go;
 	}
 
 	p.reset = function(){
-		ansGroup.freshAttr('x');
+		ansGroup.freshAttr('y');
 		ansGroup.set({mouseEnabled:true});
 	}
 

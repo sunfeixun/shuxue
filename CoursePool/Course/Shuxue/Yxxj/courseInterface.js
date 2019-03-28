@@ -1,5 +1,5 @@
 let ShuxueYxxj1 = {};   //课程管理器
-var projectData = {width:1280,height:720};      //针对该系列课程的数据
+var projectData = {width:1280,height:720,showTextSize:50};      //针对该系列课程的数据
 var courseGetter = courseGetter || null;
 
 if(courseGetter){
@@ -354,7 +354,7 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 			this.custom.state = 'normal';
 		}
 
-		partID === 4 && this.on('added',function(){this.addChild(ShuxueYxxj1.loader.getImage('tipbg.jpg'));},null,true);
+		partID === 4 && this.on('added',function(){this.addChildAt(ShuxueYxxj1.loader.getImage('tipbg.jpg'),0);},null,true);
 	}
 
 	part.insertPart = function(newpart,id){
@@ -421,7 +421,7 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 
 
 	/////tip类，就是活动准备环节，显示方式不同于其他环节
-	function tip() {
+	function tip(txt1,txt2) {
 		this.Container_constructor();
 		globalPartQueue[0] = this;
 		this.custom = {};
@@ -432,6 +432,16 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 		//this.addChild(new createjs.Shape(new createjs.Graphics().f('white').rr(0,0,1280,720,70)));
 		this.set({x:640,y:360,regX:640,regY:360});
 		this.on('added',function(){this.addChildAt(ShuxueYxxj1.loader.getImage('tipbg.jpg'),0)},null,true);
+
+		txt1 = txt1 || '';
+		txt2 = txt2 || '';
+		let txt3;
+
+		if(txt1.length || txt2.length){
+			txt3 = txt1 + '\n' + txt2;
+			txt3 = new ShuxueYxxj1.text(txt3,projectData.showTextSize).set({x:157,y:109,lineHeight:projectData.showTextSize*1.5});
+			this.addChild(txt3);
+		}
 	}
 
 	function hideTip(targ) {
@@ -453,76 +463,28 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 })();
 
 (function() {
-	let p;
-
-	function tiponce(txt) {
+	function part4text(text){
 		this.Container_constructor();
-		this.set({regX:640,regY:360,x:640,y:360});
 
-		txt = new ShuxueYxxj1.text(txt,40);
-		txt.set({x:(1280-txt.getBounds().width)/2,y:300});
-
-		this.addChild(new createjs.Shape(new createjs.Graphics().f('white').r(0,0,1280,720)),txt);
-		this.cursor = 'pointer';
-		this.on('click',p.hideme,this,true);
-
-		this.custom = {};
-		this.custom.st = null;
-		this.custom.recorder = new Array;          //用来记录舞台其他元素visible属性；
-		this.custom.listenOut = null;
-		this.custom.listenResume = null;
-	}
-
-	function destroyTip() {
-		this.removeAllChildren();
-		this.removeAllEventListeners();
-		this.parent.removeChild(this);
-	}
-
-	function listenOut(e,d) {         //如果当前页切换出去，tip倒计时暂停
-		if(!this.custom.st) return;
-		d === 'pause'? this.custom.st.pause():this.custom.st.resume();
-	}
-
-	p = createjs.extend(tiponce,createjs.Container);
-
-	p.hideme = function(){
-		for(let i=0;i<this.custom.recorder.length;i++){
-			this.custom.recorder[i][0].visible = this.custom.recorder[i][1];
+		text = text || '';
+		if(text.length){
+			text = new ShuxueYxxj1.text(text,projectData.showTextSize);
+			text.lineHeight = text.size * 1.5;
+			text.x = (projectData.width - text.getBounds().width)/2;
+			text.y = (projectData.height - text.getBounds().height)/2;
+			this.addChild(text);
+			/*textCon.x = (1280-textCon.getBounds().width)/2;
+			textCon.y = (720-textCon.getBounds().height)/2-50;*/
 		}
-
-		TweenLite.to(this,0.5,{scaleX:0,scaleY:0,ease:Back.easeIn,onComplete:destroyTip,onCompleteScope:this});
-		this.parent.off('removed',this.custom.listenOut);
-		this.parent.off('added',this.custom.listenResume);
-		this.custom.st && this.custom.st.kill();
-
-		delete this.custom;
 	}
 
-	p.showOut = function() {
-		if(!this.parent){
-			console.log('需要先添加到容器中来隐藏其他元素');
-			return;
-		}
+	let p = createjs.extend(part4text,createjs.Container);
 
-		this.custom.st = TweenLite.delayedCall(5,p.hideme,null,this);
-
-		let children = this.parent.children;
-
-		for(let i=0;i<children.length;i++){
-			if(children[i]===this) continue;
-			this.custom.recorder.push([children[i],children[i].visible]);
-			children[i].visible = false;
-		}
-
-		TweenLite.from(this,0.5,{scaleX:0,scaleY:0,ease:Back.easeOut});
-		this.custom.listenOut = this.parent.on('removed',listenOut,this,false,'pause');
-		this.custom.listenResume = this.parent.on('added',listenOut,this,false,'resume');
-
-		return this;
+	p.addTo = function(_parent){
+		return _parent.addChild(this);
 	}
 
-	ShuxueYxxj1.tipOnce = createjs.promote(tiponce,'Container');
+	ShuxueYxxj1.part4Text = createjs.promote(part4text,'Container');
 })();
 
 (function() {
@@ -547,176 +509,41 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 })();
 
 (function() {
-	let bitmapSource = null;
+	let attr = {x:70,lineHeight:projectData.showTextSize*1.5};
+	let father = ShuxueYxxj1;
 
-
-	function prevNext(){
-		if(!bitmapSource){
-			this.next = ShuxueYxxj1.loader.getImage('next.png','center').set({scaleX:0.3,scaleY:0.3,x:1242,y:350});
-			this.prev = this.next.clone().set({x:40,visible:false,scaleX:-this.next.scaleX});
-		}else if(bitmapSource.prev && bitmapSource.next){
-			this.prev = bitmapSource.prev.clone();
-			this.next = bitmapSource.next.clone();
-		}
-
-		this.prev.funcName = 'prev';
-		this.next.funcName = 'next';
-	}
-
-
-	prevNext.setBitmapSource = function(source) {
-		bitmapSource = source;
-	}
-
-	prevNext.prototype.addTo = function(parent) {
-		parent.addChild(this.prev,this.next);
-		return parent;
-	}
-
-	ShuxueYxxj1.prevNext = prevNext;	
-})();
-
-(function() {
-
-	function timelinetext(texts) {
+	function part5text(txt1,txt2){
 		this.Container_constructor();
-		let txt = new ShuxueYxxj1.text('',50).set({x:650,y:240,textAlign:'center',textBaseline:'middle'}), _txt;
-		let duration = 0.4;
-		let button = new createjs.Container().set({x:640,y:480});
-		let timeline = new TimelineLite();
-		let buttonCon = new createjs.Container;
+		let bound, cover1, cover2;
 
-		button.addChild(
-			new createjs.Shape(new createjs.Graphics().f('#3399FF').rr(-110,-50,220,100,49)),
-			new ShuxueYxxj1.text('确 定',50,'white').set({textAlign:'center',textBaseline:'middle'})
-			);
+		txt1 = new father.text(txt1,projectData.showTextSize).set(attr).set({y:105});
+		bound = txt1.getTransformedBounds();
+		cover1 = new father.textCover(txt1,this);
+		cover1.alpha = 0.01;
+		cover1.on('click',onclick);
+		this.addChild(txt1);
 
-		buttonCon.addChild(button);
-
-		this.addChild(buttonCon);
-		this.custom = {};
-
-		for(let i=0;i<texts.length;i++){
-			if(_txt){
-				timeline.to(_txt,duration,{alpha:0});
-			}
-
-			_txt = txt.clone().set({text:texts[i]});
-			this.addChild(_txt);
-			timeline.from(_txt,duration,{alpha:0}).call(showbtn,null,this,'-='+duration.toString()).addPause();
-		}
-
-		this.custom.buttonTween = TweenLite.from(buttonCon,duration,{alpha:0}).pause();
-		buttonCon.cursor = 'pointer';
-		buttonCon.on('click',onclick,this);
-
-		this.custom.limit = texts.length;
-		this.custom.count = 0;
-		this.custom.timeline = timeline;
-		this.custom.defaultButton = button;
-		this.custom.buttonIndex = [];
-		this.custom.buttonCon = buttonCon;
-		this.custom.noActButton = [];
-	}
-
-	function onclick(e) {
-		if(this.custom.noActButton.indexOf(e.target)!==-1 || (!this.custom.timeline.paused() && this.custom.timeline.progress()!==1)) return;
-
-		this.custom.count ++;
-		if(this.custom.count>=this.custom.limit){
-			this.custom.buttonCon.visible = false;
-			ShuxueYxxj1.preferSound('sucess');
-			ShuxueYxxj1.playFire();
-		}else{
-			this.custom.timeline.play();
-			this.custom.buttonTween.seek(0).pause();
+		if(typeof(txt2)==='string'){
+			txt2 = new father.text(txt2,projectData.showTextSize).set(attr).set({y:bound.y + bound.height + attr.lineHeight});
+			cover2 = new father.textCover(txt2,this);
+			cover2.alpha = 0.01;
+			cover2.on('click',onclick);
+			this.addChild(txt2);
 		}
 	}
 
-	function showbtn() {
-		let buttonIndex = this.custom.buttonIndex;
-		for(let i=0;i<buttonIndex.length;i++){
-			if(buttonIndex[i][0]===this.custom.count){
-				this.custom.defaultButton.visible = false;
-				this.custom.buttonIndex[i][1].visible = true;
-			}
-			break;
-		}
-
-		this.custom.buttonTween.restart();
+	function onclick(e){
+		e.target.alpha = e.target.alpha > 0.5 ? 0.01:0.6;
 	}
 
-	let p = createjs.extend(timelinetext,createjs.Container);
+	let p = createjs.extend(part5text,createjs.Container);
 
-	p.otherButton = function(index,button) {
-		this.custom.buttonIndex.push([index,button]);
-		this.custom.buttonCon.addChild(button);
-		button.visible = false;
+	p.addTo = function(_parent){
+		return _parent.addChild(this);
 	}
 
-	p.getDefaultButton = function() {
-		return this.custom.defaultButton;
-	}
-
-	p.noAct = function(btn) {
-		this.custom.noActButton.push(btn);
-	}
-
-	ShuxueYxxj1.timelineText = createjs.promote(timelinetext,'Container');
+	ShuxueYxxj1.part5Text = createjs.promote(part5text,'Container');
 })();
-
-/*
-(function(){
-	function ordercontent(source){
-		this.Array_constructor();
-		if(source){
-			for(let i=0;i<source.length;i++){
-				this.push(source[i]);
-			}
-		}
-		this.order = 0;
-	}
-
-	let p = createjs.extend(ordercontent,Array);
-
-	p.swip = function(to){
-		if(TweenMax.isTweening(this)) return null;
-		let order = this.order;
-		
-		to === 'next'? this.order ++:this.order --;
-
-		if(!this[this.order]){
-			this.order = order;
-			return null;
-		}
-
-		TweenLite.set(this[order],{alpha:0});
-		TweenLite.to(this[this.order],0.75,{alpha:1});
-		return this.order;
-	}
-
-	p.init = function(){
-		for(let i=0;i<this.length;i++){
-			TweenLite.set(this[i],{alpha:0});
-		}
-		this.order = 0;
-		TweenLite.set(this[0],{alpha:1});
-	}
-
-	p.isEnd = function(){
-		return this.order === this.length-1;
-	}
-
-	p.isHead = function(){
-		return this.order === 0;
-	}
-
-	p.getContentAt = function(order){
-		return this[order];
-	}
-
-	ShuxueYxxj1.orderContent = createjs.promote(ordercontent,'Array');
-})();*/
 
 ShuxueYxxj1.forTest = function(cont){
 	cont.on('pressmove',drag);
@@ -726,8 +553,4 @@ ShuxueYxxj1.forTest = function(cont){
 		e.type==='pressmove' && e.target.set({x:e.localX,y:e.localY});
 		e.type==='pressup' && console.log(e.target.x,e.target.y);
 	}
-}
-
-function rs(){
-	ShuxueYxxj1.resetSlide();
 }

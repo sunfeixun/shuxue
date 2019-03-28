@@ -5,74 +5,39 @@
 	father.loader.add(['QUIZ.json','QUIZ.png'],father.quizPath);
 
 	const ansGroup = new father.group;
-	const padding = 83, left = 141;
-	let correctIcon;
 
 	p.go = function(){
-		new father.title('缠着的绳子哪一根最长呢？请在正确的（ ）里画“√”。',p);
+		new father.title('想一想，他们谁高呢？',p);
 		let sprite = father.loader.getSprite('QUIZ',true);
 		let ansCon = p.addChild(new createjs.Container);
-		let objs = ['ropes1','ropes2','ropes3'];
+		let scale = 0.8
 
-		for(let i = 0;i<objs.length;i++){
-			ansGroup.array.push(sprite[objs[i]]);
-		}
+		ansGroup.array.push(sprite.changjl,sprite.horse);
+		ansGroup.addTo(ansCon);
 
-		ansGroup.set({y:360}).addTo(ansCon);
+		sprite.changjl.set({x:398,y:378,scaleX:scale,scaleY:scale});
+		sprite.horse.set({x:843,y:526,scaleX:scale,scaleY:scale});
 
-		sprite.ropes3.correct = true;
+		sprite.changjl.correct = true;
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);
 
-
-		// 创建括号
-		let bracket;
-
-		for(let i=0;i<ansGroup.array.length;i++){
-			bracket = sprite.bracket.clone();
-			bracket.y = 530;
-			ansGroup.array[i].bracket = bracket;
-			bracket.correct = ansGroup.array[i].correct;
-			ansCon.addChild(bracket);
-		}
-
-		correctIcon = sprite.correctIcon;
-		correctIcon.y = bracket.y;
-
-		p.addChild(correctIcon);
-
-		fresh();
+		ansGroup.freshAttr('x');
 
 		delete p.go;
 	}
 
 	p.reset = function(){
-		fresh();
-		correctIcon.visible = false;
-		p.mouseEnabled = true;
-	}
-
-	function fresh(){
-		let last, cur;
-		ansGroup.randomOrder();
-
-		for(let i=0;i<ansGroup.array.length;i++){
-			cur = ansGroup.array[i];
-			last = ansGroup.array[i-1];
-			cur.x = last? last.x + (last.getTransformedBounds().width + cur.getTransformedBounds().width)/2 + padding:cur.getTransformedBounds().width/2 + left;
-			cur.bracket.x = cur.x;
-		}
+		ansGroup.freshAttr('x');
+		ansGroup.set({mouseEnabled:true});
 	}
 
 	function onclick(e){
 		if(e.target.correct){
-			p.mouseEnabled = false;
-			correctIcon.visible = true;
-			correctIcon.x = e.target.bracket? e.target.bracket.x:e.target.x;
-
 			p.dispatchEvent(father.ANSWER_CORRECT);
-			p.dispatchEvent(father.ANSWER_FINISH);			
+			p.dispatchEvent(father.ANSWER_FINISH);
+			ansGroup.set({mouseEnabled:false});
 		}else{
 			p.dispatchEvent(father.ANSWER_INCORRECT);
 		}

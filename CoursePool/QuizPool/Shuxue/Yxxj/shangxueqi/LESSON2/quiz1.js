@@ -10,15 +10,15 @@
 		new father.title('想一想，哪一根最长呢？',p);
 		let sprite = father.loader.getSprite('QUIZ');
 		let ansCon = p.addChild(new createjs.Container);
-		let objs = ['rope1','rope2','rule1','rule2'];
+		let objs = ['rule1','rule2'];
 
 		for(let i = 0;i<objs.length;i++){
 			ansGroup.array.push(sprite[objs[i]]);
 		}
 
-		ansGroup.set({x:176}).sumAttr('y',190,125).addTo(ansCon);
+		ansGroup.set({x:176}).sumAttr('y',300,200).addTo(ansCon);
 
-		sprite.rope2.correct = true;
+		sprite.rule2.correct = true;
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);

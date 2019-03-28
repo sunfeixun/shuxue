@@ -4,43 +4,43 @@
 
 	father.loader.add(['QUIZ.json','QUIZ.png'],father.quizPath);
 
-	const sugarGroup = new father.group, budingGroup = new father.group;
+	const ansGroup = new father.group;
 	const padding = 83, left = 141;
-	const numbers = new father.group;
-	let circle;
+	let correctIcon;
 
 	p.go = function(){
-		new father.title('比一比，两种糖果哪一种多呢？请在正确的（ ）里画“○”。',p);
+		new father.title('缠着的绳子哪一根最长呢？请在正确的（ ）里画“√”。',p);
 		let sprite = father.loader.getSprite('QUIZ',true);
 		let ansCon = p.addChild(new createjs.Container);
-		let scale = {scaleX:0.6,scaleY:0.6};
+		let objs = ['ropes1','ropes2','ropes3'];
 
-		for(let i=0;i<5;i++){
-			sugarGroup.array.push(sprite.sugar.clone().set(scale));
-			budingGroup.array.push(sprite.buding.clone().set(scale));
+		for(let i = 0;i<objs.length;i++){
+			ansGroup.array.push(sprite[objs[i]]);
 		}
 
-		sugarGroup.y = 291;
-		budingGroup.y = 455;
+		ansGroup.set({y:360}).addTo(ansCon);
 
-		sugarGroup.set({y:sugarGroup.y}).sumAttr('x',294,119).addTo(ansCon);
-		budingGroup.set({y:budingGroup.y}).sumAttr('x',294,119).addTo(ansCon);
+		sprite.ropes3.correct = true;
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);
 
+
 		// 创建括号
 		let bracket;
 
-		sugarGroup.bracket = sprite.bracket.clone().set({x:967,y:sugarGroup.y});
-		budingGroup.bracket = sprite.bracket.clone().set({x:967,y:budingGroup.y});
+		for(let i=0;i<ansGroup.array.length;i++){
+			bracket = sprite.bracket.clone();
+			bracket.y = 530;
+			ansGroup.array[i].bracket = bracket;
+			bracket.correct = ansGroup.array[i].correct;
+			ansCon.addChild(bracket);
+		}
 
-		ansCon.addChild(sugarGroup.bracket,budingGroup.bracket);
+		correctIcon = sprite.correctIcon;
+		correctIcon.y = bracket.y;
 
-		circle = sprite.circle;
-		circle.x = sugarGroup.bracket.x;
-
-		p.addChild(circle);
+		p.addChild(correctIcon);
 
 		fresh();
 
@@ -49,43 +49,27 @@
 
 	p.reset = function(){
 		fresh();
-		circle.visible = false;
+		correctIcon.visible = false;
 		p.mouseEnabled = true;
 	}
 
 	function fresh(){
-		let n1, n2, i, answer;
-		let attr = {visible:false,correct:false};
+		let last, cur;
+		ansGroup.randomOrder();
 
-		numbers.array = [1,2,3,4,5];
-		n1 = numbers.chooseOne();
-		n2 = numbers.chooseOne();
-
-		sugarGroup.set(attr);
-		budingGroup.set(attr);
-
-		sugarGroup.bracket.correct = false;
-		budingGroup.bracket.correct = false;
-
-		for(i=0;i<n1;i++){
-			sugarGroup.array[i].visible = true;
+		for(let i=0;i<ansGroup.array.length;i++){
+			cur = ansGroup.array[i];
+			last = ansGroup.array[i-1];
+			cur.x = last? last.x + (last.getTransformedBounds().width + cur.getTransformedBounds().width)/2 + padding:cur.getTransformedBounds().width/2 + left;
+			cur.bracket.x = cur.x;
 		}
-
-		for(i=0;i<n2;i++){
-			budingGroup.array[i].visible = true;
-		}
-
-		answer = n1>n2? sugarGroup:budingGroup;
-
-		answer.set({correct:true});
-		answer.bracket.correct =  true;
 	}
 
 	function onclick(e){
 		if(e.target.correct){
 			p.mouseEnabled = false;
-			circle.visible = true;
-			circle.y = e.target.bracket? e.target.bracket.y:e.target.y;
+			correctIcon.visible = true;
+			correctIcon.x = e.target.bracket? e.target.bracket.x:e.target.x;
 
 			p.dispatchEvent(father.ANSWER_CORRECT);
 			p.dispatchEvent(father.ANSWER_FINISH);			

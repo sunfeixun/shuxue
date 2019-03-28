@@ -4,39 +4,41 @@
 
 	father.loader.add(['QUIZ.json','QUIZ.png'],father.quizPath);
 
-	const candleGroup = new father.group;
-	let triangle;
+	const treeGroup = new father.group;
+	let correctIcon;
 
 	p.go = function(){
-		new father.title('想一想，3根蜡烛哪一根最粗？请在正确的（ ）里画“△”。',p);
+		new father.title('想一想，哪颗大树最高，请在正确的（ ）里面画“√”。',p);
 		let sprite = father.loader.getSprite('QUIZ',true);
-		let scalex = [0.6,0.8,1];
+		let scaley = [0.6,0.8,1];
 		let ansCon = p.addChild(new createjs.Container);
-		let bracket, candle
+		let bracket, tree
 
-		sprite.candle.scaleY = 0.8;
-		sprite.candle.y = 360;
+		sprite.tree.regY = sprite.tree.getBounds().height;
+
+		sprite.tree.scaleX = 0.8;
+		sprite.tree.y = 500;
 		sprite.bracket.y = 560;
-		sprite.triangle.y = sprite.bracket.y;
+		sprite.correctIcon.y = sprite.bracket.y;
 
-		triangle = sprite.triangle;
-		p.addChild(triangle);
+		correctIcon = sprite.correctIcon;
+		p.addChild(correctIcon);
 
-		for(let i=0;i<scalex.length;i++){
-			candle = sprite.candle.clone();
-			candle.scaleX = scalex[i];
+		for(let i=0;i<scaley.length;i++){
+			tree = sprite.tree.clone();
+			tree.scaleY = scaley[i];
 
 			bracket = sprite.bracket.clone();
-			candle.bracket = bracket;
+			tree.bracket = bracket;
 
-			candleGroup.array.push(candle);
-			ansCon.addChild(candle,bracket);
-			if(i===scalex.length-1){
-				candle.correct = bracket.correct = true;
+			treeGroup.array.push(tree);
+			ansCon.addChild(tree,bracket);
+			if(i===scaley.length-1){
+				tree.correct = bracket.correct = true;
 			}
 		}
 
-		candleGroup.sumAttr('x',309,331).addTo(ansCon);
+		treeGroup.sumAttr('x',309,331).addTo(ansCon);
 
 		ansCon.cursor = 'pointer';
 		ansCon.on('click',onclick);
@@ -52,18 +54,18 @@
 	}
 
 	function fresh(){
-		candleGroup.freshAttr('x');
-		for(let i=0;i<candleGroup.array.length;i++){
-			candleGroup.array[i].bracket.x = candleGroup.array[i].x;
+		treeGroup.freshAttr('x');
+		for(let i=0;i<treeGroup.array.length;i++){
+			treeGroup.array[i].bracket.x = treeGroup.array[i].x;
 		}
-		triangle.visible = false;
+		correctIcon.visible = false;
 	}
 
 	function onclick(e){
 		if(e.target.correct){
 			p.mouseEnabled = false;
-			triangle.x = e.target.x;
-			triangle.visible = true;
+			correctIcon.x = e.target.x;
+			correctIcon.visible = true;
 
 			p.dispatchEvent(father.ANSWER_CORRECT);
 			p.dispatchEvent(father.ANSWER_FINISH);

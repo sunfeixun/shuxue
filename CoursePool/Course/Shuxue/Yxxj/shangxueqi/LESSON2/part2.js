@@ -10,34 +10,30 @@
 
 		p.go = function() {
 			sprite = sprite || father.loader.getSprite('part2',true);
-			let rabbitGroup = new father.group, luoboGroup = new father.group;
+			let rabbit = sprite.rabbit, luobo = sprite.luobo;
+			let inst;
 
-			for(let i=1;i<=4;i++){
-				rabbitGroup.array.push(sprite.rabbit.clone());
-				luoboGroup.array.push(sprite.luobo.clone());
-			}
+			rabbit.regX = rabbit.regY = luobo.regX = luobo.regY = 0;
 
-			let str = '有几只小白兔？\n有几根胡萝卜？\n萝卜的数量够不够小兔子分呢？为什么？';
-			let txt = new father.text(str,40).addTo(p).set({x:274,y:55});
+			inst = father.createElement([
+				{type:'text',attr:{x:208,y:143,text:'有几只小白兔？\n有几根胡萝卜？',size:35}},
+				{type:'text',attr:{x:677,y:143,text:'萝卜的数量够不够小兔子分呢？\n为什么？',size:35}},
+				{statement:{attr:{scale:0.8,y:271,x:'+=156'}}},
+				{type:rabbit.clone(),attr:{x:50}},
+				{type:rabbit,clone:3},
+				{statement:{attr:{scale:0.8,y:443,x:'+=153'}}},
+				{type:luobo.clone(),attr:{x:70}},
+				{type:luobo,clone:3},
+				{statement:null},
+				{type:'text',attr:{text:'和      一样多',x:856,y:390,size:40}},
+				{type:rabbit.clone(),attr:{scale:0.87,x:743,y:344}},
+				{type:luobo.clone(),attr:{scale:0.87,x:928,y:348}},
+				{type:'text',center:true,attr:{text:'萝卜有4根，小兔子有4只，萝卜和小兔子同样多',x:'center',y:650,size:40,alpha:0},instance:'txt'}
+			],father.loader,p);
 
-			rabbitGroup.addTo(p).set({y:329,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-			luoboGroup.addTo(p).set({y:434,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-
-			p.addChild(sprite.rabbit.clone()).set({x:713,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(sprite.luobo.clone()).set({x:868,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(txt.clone()).set({x:778,y:367,text:'和     一样多'});
-
-			txt = new father.text('萝卜有4根，小兔子有4只，萝卜和小兔子同样多。',40).set({x:640,y:630,alpha:0}).alignCenter().addTo(p);
-
-			father.getClickBoard(p).on('click',onclick,null,true,txt);
+			father.getClickBoard(p).on('click',show,null,true,inst.txt);
 
 			delete p.go;
-		}
-
-		function onclick(e,txt){
-			e.target.visible = false;
-			TweenLite.to(txt,0.75,{alpha:1});
-			father.preferSound('click');
 		}
 	})();
 
@@ -47,33 +43,29 @@
 
 		p.go = function() {
 			sprite = sprite || father.loader.getSprite('part2',true);
-			let rabbitGroup = new father.group, luoboGroup = new father.group;
+			let flower = sprite.flower, butterfly = sprite.butterfly;
+			let inst;
+			flower.regX = flower.regY = butterfly.regX = butterfly.regY = 0;
 
-			for(let i=1;i<=4;i++){
-				rabbitGroup.array.push(sprite.flower.clone());
-				luoboGroup.array.push(sprite.butterfly.clone());
-			}
+			inst = father.createElement([
+				{type:'text',attr:{text:'有几只小花？\n有几只蝴蝶？',x:252,y:143,size:35}},
+				{type:'text',attr:{x:750,y:143,text:'花朵的数量够不够蝴蝶分呢？\n为什么？',size:35}},
+				{statement:{attr:{scale:0.6,y:271,x:'+=112'}}},
+				{type:flower.clone(),attr:{x:71}},
+				{type:flower,clone:4},
+				{statement:{attr:{scale:0.6,y:443,x:'+=112'}}},
+				{type:butterfly.clone(),attr:{x:71}},
+				{type:butterfly,clone:2},
+				{statement:null},
+				{type:'text',attr:{text:'比       多两个',x:856,y:390,size:40}},
+				{type:flower.clone(),attr:{scale:0.7,x:743,y:344}},
+				{type:butterfly.clone(),attr:{scale:0.7,x:920,y:348}},
+				{type:'text',center:true,attr:{text:'小花有5朵，蝴蝶有3只，花朵比蝴蝶多2',x:'center',y:650,size:40,alpha:0},instance:'txt'}
+				],father.loader,p);
 
-			let str = '有几只小花？\n有几只蝴蝶？\n花朵的数量够不够蝴蝶分呢？为什么？';
-			let txt = new father.text(str,40).addTo(p).set({x:274,y:55});
+			father.getClickBoard(p).on('click',show,null,true,inst.txt);
 
-			rabbitGroup.addTo(p).set({y:329,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-			luoboGroup.addTo(p).set({y:434,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-
-			p.addChild(sprite.flower.clone()).set({x:713,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(sprite.butterfly.clone()).set({x:868,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(txt.clone()).set({x:778,y:367,text:'比     多两个'});
-
-			txt = new father.text('小花有5朵，蝴蝶有3只，花朵比蝴蝶多2。',40).set({x:640,y:630,alpha:0}).alignCenter().addTo(p);
-
-			father.getClickBoard(p).on('click',onclick,null,true,txt);
 			delete p.go;
-		}
-
-		function onclick(e,txt){
-			e.target.visible = false;
-			TweenLite.to(txt,0.75,{alpha:1});
-			father.preferSound('click');			
 		}
 	})();
 
@@ -82,26 +74,27 @@
 
 		p.go = function() {
 			sprite = sprite || father.loader.getSprite('part2',true);
-			let rabbitGroup = new father.group, luoboGroup = new father.group;
+			let monkey = sprite.monkey, banana = sprite.banana;
+			let inst;
+			monkey.regX = monkey.regY = banana .regX = banana.regY = 0;
 
-			for(let i=1;i<=4;i++){
-				rabbitGroup.array.push(sprite.monkey.clone());
-				luoboGroup.array.push(sprite.banana.clone());
-			}
+			inst = father.createElement([
+				{type:'text',attr:{text:'小猴子有几只？\n香蕉有几把？',x:252,y:143,size:35}},
+				{type:'text',attr:{x:730,y:143,text:'香蕉的数量够不够小猴子分呢？\n为什么？',size:35}},
+				{statement:{attr:{scale:0.77,y:271,x:'+=109'}}},
+				{type:monkey.clone(),attr:{x:71}},
+				{type:monkey,clone:2},
+				{statement:{attr:{scale:1.17,y:443,x:'+=109'}}},
+				{type:banana.clone(),attr:{x:71}},
+				{type:banana,clone:4},
+				{statement:null},
+				{type:'text',attr:{text:'比       少两个',x:856,y:390,size:40}},
+				{type:monkey.clone(),attr:{scale:0.77,x:743,y:344}},
+				{type:banana.clone(),attr:{scale:1.17,x:920,y:348}},
+				{type:'text',center:true,attr:{text:'香蕉有5把，小猴子有3只，小猴子比香蕉少2',x:'center',y:650,size:40,alpha:0},instance:'txt'}
+				],father.loader,p);
 
-			let str = '小猴子有几只？\n香蕉有几把？\n香蕉的数量够不够小猴子分呢？为什么？';
-			let txt = new father.text(str,40).addTo(p).set({x:274,y:55});
-
-			rabbitGroup.addTo(p).set({y:329,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-			luoboGroup.addTo(p).set({y:434,scaleX:0.49,scaleY:0.49}).sumAttr('x',199,94);
-
-			p.addChild(sprite.monkey.clone()).set({x:713,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(sprite.banana.clone()).set({x:868,y:386,scaleX:0.7,scaleY:0.7});
-			p.addChild(txt.clone()).set({x:778,y:367,text:'比     少两个'});
-
-			txt = new father.text('香蕉有5把，小猴子有3只，小猴子比香蕉少2。',40).set({x:640,y:630,alpha:0}).alignCenter().addTo(p);
-
-			father.getClickBoard(p).on('click',onclick,null,true,txt);
+			father.getClickBoard(p).on('click',show,null,true,inst.txt);
 			delete p.go;
 		}
 
@@ -111,4 +104,11 @@
 			father.preferSound('click');			
 		}
 	})();
+
+	function show(e,txt){
+		e.target.parent.removeChild(e.target);
+		father.preferSound('click');
+		TweenLite.to(txt,0.75,{alpha:1});
+	}
+
 })();

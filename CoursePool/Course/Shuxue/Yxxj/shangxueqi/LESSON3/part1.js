@@ -5,16 +5,16 @@
 	father.loader.add(['lesson3.json','lesson3.png'],father.lessonPath);
 
 	p.go = function() {
-		let str = '小朋友们，老师带你们去看大森林里的小动物，\n它们在森林里不同的位置，你们愿意和他们成为\n朋友吗？现在我们一起来认识它们吧！';
-		let txt = new father.text(str,35);
+		let str = '森林里有哪些小动物呢？';
+		let title = new father.title(str,p);
+		title.color = 'white';
 
-		txt.x = (1280-txt.getBounds().width)/2;
-		txt.y = 70;
-
-		p.addChild(txt);
-
-		let sprite = father.loader.getSprite('lesson3',true);
-		p.addChild(sprite.animals).set({x:640,y:420});
+		let sprite = father.loader.getSprite('lesson3');
+		let scale = 2;
+		sprite.animals.scaleX = 1280/sprite.animals.getBounds().width;
+		sprite.animals.scaleY = 720/sprite.animals.getBounds().height;
+		sprite.animals.y = 15;
+		p.addChildAt(sprite.animals,0);
 
 		delete p.go;
 	}

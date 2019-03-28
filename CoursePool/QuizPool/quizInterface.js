@@ -35,6 +35,8 @@ read()  读旁白/题干
 
 	p.createElement = function(eles,loader,container){
 		let instance = {};
+		let statement;
+		let prevEle = {};
 		// let data, ele;
 
 		for(let i=0;i<eles.length;i++){
@@ -45,6 +47,15 @@ read()  读旁白/题干
 
 		function _create(data,isClone){
 			let ele;
+			let _attr = {};   //为避免statement的attr被重复改写
+
+			if(data.statement){
+				statement = data.statement;
+				return;
+			}else if(data.statement===null){
+				statement = null;
+				return;
+			}
 
 			if(data.clone){
 				let n = data.clone;
@@ -68,6 +79,16 @@ read()  读旁白/题干
 				ele = isClone? data.type.clone(true) : data.type;
 			}
 
+			if(statement){
+				for(let i in statement){
+					if(isClone){
+						data[i] = statement[i];
+					}else{
+						data[i] = data[i] === undefined? statement[i]:data[i];
+					}
+				}
+			}
+
 			if(data.on){
 				if(typeof(data.on[0])==='string'){
 					ele.on.apply(ele,data.on);
@@ -88,11 +109,27 @@ read()  读旁白/题干
 				}
 			};
 
-			if(data.attr){
-				data.attr.x = _convert(data.attr.x,p.default.width);
-				data.attr.y = _convert(data.attr.y,p.default.height);
+			// if(data.x) ele.x = _convert(data.x,p.default.width,prevEle.x);
+			// if(data.y) ele.y = _convert(data.y,p.default.height,prevEle.y);
+			if(statement && statement.attr){
+				for(let i in statement.attr){
+					data.attr[i] = data.attr[i]===undefined? statement.attr[i]:data.attr[i];
+				}
+			}
 
-				ele.set(data.attr);
+			if(data.attr){
+				for(let i in data.attr){
+					_attr[i] = data.attr[i];
+				}
+
+				if(typeof(_attr.scale)==='number'){
+					_attr.scaleX = _attr.scaleY = _attr.scale;
+					delete _attr.scale;
+				}
+				_attr.x = _convert(_attr.x,p.default.width,prevEle.x);
+				_attr.y = _convert(_attr.y,p.default.height,prevEle.y);
+
+				ele.set(_attr);
 			}
 
 			if(data.addToArray){
@@ -105,9 +142,10 @@ read()  读旁白/题干
 			}
 
 			data.addTo? data.addTo.addChild(ele):container.addChild(ele);
+			prevEle = ele;
 		}
 
-		function _convert(value,max){
+		function _convert(value,max,prevNum){
 			if(typeof(value)==='number'){
 				return value;
 			}else if(value===undefined||value===null){
@@ -117,6 +155,10 @@ read()  读旁白/题干
 			if(value==='center') return max/2;
 			if(value.indexOf('center-=')===0) return max/2 - parseInt(value.replace('center-=',''));
 			if(value.indexOf('center+=')===0) return max/2 + parseInt(value.replace('center+=',''));
+
+			prevNum = prevNum===undefined? 0:prevNum;
+			if(value.indexOf('+=')===0) return prevNum + parseInt(value.replace('+=',''));
+			if(value.indexOf('-=')===0) return prevNum - parseInt(value.replace('-=',''));
 		}
 	}
 
