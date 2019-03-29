@@ -1,7 +1,7 @@
 (function(){
 	let father = projectData.courseInterface;
 
-	father.loader.add(['lesson1.json','lesson1.png'],father.lessonPath);
+	father.loader.add(['lesson1.json','lesson1.png','yinling1.mp3','yinling2.mp3','yinling2a.mp3','yinling3.mp3','yinling3a.mp3','yinling4.mp3'],father.lessonPath);
 	let sprite;
 
 	(function() {
@@ -10,6 +10,7 @@
 		p.go = function() {
 			getImage('bg',p).set({scaleX:1.66,scaleY:1.18,regX:0,regY:0});
 			new father.title('这幅图画是一所开心的农场，小动物们都开开心心地玩耍，\n小朋友们这幅图里都有什么？',p).set({scaleX:.7,scaleY:.7,x:260});
+			father.read('yinling1.mp3');
 
 			delete p.go;
 		}
@@ -20,6 +21,7 @@
 		let p = new father.part(2,1);
 
 		p.go = function() {
+			father.read('yinling2.mp3');
 			new father.title('小朋友，图画上有几只狗、几只鸡、几头猪、几只羊、\n几棵树呢？',p,'left');
 			let sumX = 203,beginX = 252-sumX;
 			let y = 375;
@@ -31,7 +33,7 @@
 					{type:getImage('sheep'),attr:{x:beginX+=sumX,y:y}},
 					{type:getImage('tree'),attr:{x:beginX+=sumX,y:y}}
 				],father.loader,p);
-			bottomText('有一只狗、两只鸡、三头猪、四只羊、五棵树。',p);
+			bottomText('有一只狗、两只鸡、三头猪、四只羊、五棵树。',p,'yinling2a.mp3');
 
 			delete p.go;
 		}
@@ -41,6 +43,7 @@
 		let p = new father.part(2,2);
 
 		p.go = function() {
+			father.read('yinling3.mp3');
 			new father.title('小朋友，图画上有几栋房子、几只花、几个苹果、\n几只向日葵、几只小鸟呢？',p,'left');
 			let sumX = 213,beginX = 222-sumX;
 			let y = 375;
@@ -52,7 +55,7 @@
 					{type:getImage('xiangrikui'),attr:{x:beginX+=sumX,y:y}},
 					{type:getImage('gezi'),attr:{x:beginX+=sumX,y:y}}
 				],father.loader,p);
-			bottomText(' 有6栋房子、7支花、8颗苹果、9支向日葵、10只小鸟。',p);
+			bottomText(' 有6栋房子、7支花、8颗苹果、9支向日葵、10只小鸟。',p,'yinling3a.mp3');
 
 			delete p.go;
 		}
@@ -64,6 +67,7 @@
 		p.custom.noFade = true;
 
 		p.go = function() {
+		father.read('yinling4.mp3');
 		new father.title('小朋友，这些数字都怎么写呢？',p);
 		let arr = new Array;
 		let instance = father.createElement([
@@ -86,6 +90,7 @@
 
 		p.go = function() {
 			new father.title('小朋友，这些数字都怎么写呢？',p);
+			father.read('yinling4.mp3');
 			let arr = new Array;
 			let instance = father.createElement([
 					{type:getImage('num6'),attr:{x:640,y:202,addX:793},addToArray:arr},
@@ -111,13 +116,15 @@
 		return s;
 	}
 
-	function bottomText(str,_parent){
+	function bottomText(str,_parent,read){
+
 		str = new father.text(str,40).alignCenter();
 		str.x = 640;
 		str.y = 640;
 		str.alpha = 0;
 		_parent.addChild(str);
 		father.getClickBoard(_parent).on('click',function(e){
+			read && father.read(read);
 			father.preferSound('click');
 			e.target.parent.removeChild(e.target);
 			TweenLite.to(str,0.75,{alpha:1});

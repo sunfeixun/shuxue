@@ -132,7 +132,7 @@ prevNext类			页面切换显示按钮，用于其他框架替换
 				for(let i=0;i<quizes.length;i++){
 					quizes[i].on(QuizPool.ANSWER_CORRECT,onAnswer);
 					quizes[i].on(QuizPool.ANSWER_INCORRECT,onAnswer);
-					quizes[i].on(QuizPool.ANSWER_FINISH,onAnswer,null,true);
+					quizes[i].on(QuizPool.ANSWER_FINISH,onAnswer);
 				}
 				p.part.insertPart(quizes,3);
 			}
